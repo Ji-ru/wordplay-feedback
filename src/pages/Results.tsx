@@ -1,16 +1,21 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useReading } from "@/context/ReadingContext";
 import Header from "@/components/Header";
-import { Award, BarChart2, ArrowRight } from "lucide-react";
+import { Award, BarChart2, ArrowRight, LineChart } from "lucide-react";
 
 const Results = () => {
-  const { points, mode, correctWords, incorrectWords } = useReading();
+  const { points, mode, correctWords, incorrectWords, addSessionToHistory } = useReading();
   const navigate = useNavigate();
   
   const totalWords = correctWords + incorrectWords;
   const accuracy = totalWords > 0 ? Math.round((correctWords / totalWords) * 100) : 0;
+  
+  // Add current session to history when results page is viewed
+  useEffect(() => {
+    addSessionToHistory();
+  }, [addSessionToHistory]);
   
   // Determine performance level based on points and accuracy
   const getPerformanceLevel = () => {
@@ -75,6 +80,14 @@ const Results = () => {
             >
               Go Home
               <ArrowRight className="w-5 h-5" />
+            </button>
+            
+            <button 
+              onClick={() => navigate("/dashboard")}
+              className="button-secondary w-full"
+            >
+              View Progress Dashboard
+              <LineChart className="w-5 h-5" />
             </button>
             
             <button 

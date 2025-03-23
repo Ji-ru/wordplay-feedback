@@ -1,7 +1,15 @@
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, ReactNode, useEffect } from "react";
 
 type Mode = "practice" | "test";
+
+interface SessionStats {
+  date: Date;
+  points: number;
+  correctWords: number;
+  incorrectWords: number;
+  mode: Mode;
+}
 
 interface ReadingContextType {
   points: number;
@@ -17,6 +25,8 @@ interface ReadingContextType {
   incorrectWords: number;
   setIncorrectWords: (count: number) => void;
   resetStats: () => void;
+  sessionHistory: SessionStats[];
+  addSessionToHistory: () => void;
 }
 
 const ReadingContext = createContext<ReadingContextType | undefined>(undefined);
@@ -27,6 +37,15 @@ export const ReadingProvider = ({ children }: { children: ReactNode }) => {
   const [mode, setMode] = useState<Mode>("practice");
   const [correctWords, setCorrectWords] = useState(0);
   const [incorrectWords, setIncorrectWords] = useState(0);
+  const [sessionHistory, setSessionHistory] = useState<SessionStats[]>(() => {
+    const savedHistory = localStorage.getItem('sessionHistory');
+    return savedHistory ? JSON.parse(savedHistory) : [];
+  });
+
+  // Save session history to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('sessionHistory', JSON.stringify(sessionHistory));
+  }, [sessionHistory]);
 
   const addPoints = (amount: number) => {
     setPoints((prev) => prev + amount);
@@ -41,6 +60,18 @@ export const ReadingProvider = ({ children }: { children: ReactNode }) => {
     setProgress(0);
     setCorrectWords(0);
     setIncorrectWords(0);
+  };
+
+  const addSessionToHistory = () => {
+    const newSession: SessionStats = {
+      date: new Date(),
+      points,
+      correctWords,
+      incorrectWords,
+      mode
+    };
+    
+    setSessionHistory(prev => [...prev, newSession]);
   };
 
   return (
@@ -59,6 +90,8 @@ export const ReadingProvider = ({ children }: { children: ReactNode }) => {
         incorrectWords,
         setIncorrectWords,
         resetStats,
+        sessionHistory,
+        addSessionToHistory,
       }}
     >
       {children}
