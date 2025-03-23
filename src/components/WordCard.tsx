@@ -11,7 +11,15 @@ interface WordCardProps {
 }
 
 const WordCard = ({ word, correctPronunciation, onComplete }: WordCardProps) => {
-  const { mode, addPoints, reducePoints, setCorrectWords, setIncorrectWords } = useReading();
+  const { 
+    mode, 
+    addPoints, 
+    reducePoints, 
+    correctWords,
+    incorrectWords,
+    setCorrectWords, 
+    setIncorrectWords 
+  } = useReading();
   const [hasSpoken, setHasSpoken] = useState(false);
   const [feedback, setFeedback] = useState<"correct" | "incorrect" | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -32,11 +40,11 @@ const WordCard = ({ word, correctPronunciation, onComplete }: WordCardProps) => 
     
     if (isCorrect) {
       addPoints(10);
-      setCorrectWords(prev => prev + 1);
+      setCorrectWords(correctWords + 1); // Fixed: directly use the new value
       setFeedback("correct");
     } else {
       reducePoints(5);
-      setIncorrectWords(prev => prev + 1);
+      setIncorrectWords(incorrectWords + 1); // Fixed: directly use the new value
       setFeedback("incorrect");
     }
     
