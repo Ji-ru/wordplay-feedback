@@ -32,7 +32,7 @@ interface ReadingContextType {
 const ReadingContext = createContext<ReadingContextType | undefined>(undefined);
 
 export const ReadingProvider = ({ children }: { children: ReactNode }) => {
-  const [points, setPoints] = useState(100);
+  const [points, setPoints] = useState(0); // Changed from 100 to 0
   const [progress, setProgress] = useState(0);
   const [mode, setMode] = useState<Mode>("practice");
   const [correctWords, setCorrectWords] = useState(0);
@@ -56,7 +56,7 @@ export const ReadingProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const resetStats = () => {
-    setPoints(100);
+    setPoints(0); // Changed from 100 to 0
     setProgress(0);
     setCorrectWords(0);
     setIncorrectWords(0);
